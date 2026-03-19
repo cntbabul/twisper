@@ -14,6 +14,7 @@
   "repository": {},
   "dependencies": {
     "@clerk/express": "^2.0.4",
+    "@imagekit/nodejs": "^7.3.0",
     "cloudinary": "^2.9.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",

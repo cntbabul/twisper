@@ -5,6 +5,7 @@ import chatRoutes from "./routes/chatRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import socialRoutes from "./routes/socialRoutes.js";
+import videoRoutes from "./routes/videoRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { clerkMiddleware } from "@clerk/express";
 
@@ -39,6 +40,7 @@ app.use("/api/v1/chats", chatRoutes)
 app.use("/api/v1/messages", messageRoutes)
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/social", socialRoutes)
+app.use("/api/v1/videos", videoRoutes)
 
 
 

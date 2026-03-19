@@ -5,33 +5,33 @@ import { Comment } from "../models/Comment";
 import { Notification } from "../models/Notification";
 import type { AuthRequest } from "../middleware/auth";
 
-import cloudinary from "../config/cloudinary";
+import { ImageKit } from "@imagekit/nodejs";
+import imagekit from "../config/imagekit";
 
 // Create Post
 export const createPost = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+        req.setTimeout(10 * 60 * 1000); // 10 minutes timeout for uploads
         const { content } = req.body;
         const userId = req.userId;
         let imageUrl = "";
 
-        // If there's an image file, upload it to cloudinary
+        // If there's an image file, upload it to imagekit
         if (req.file) {
-            console.log("📤 Uploading to Cloudinary...", {
+            console.log("📤 Uploading to ImageKit...", {
                 filename: req.file.originalname,
                 size: req.file.size,
                 mimetype: req.file.mimetype
             });
-            const result = await new Promise((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    { folder: "twisper_posts" },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                );
-                uploadStream.end(req.file!.buffer);
+            
+            const fileToUpload = await ImageKit.toFile(req.file.buffer, req.file.originalname);
+            const result = await imagekit.files.upload({
+                file: fileToUpload,
+                fileName: `post_${Date.now()}_${req.file.originalname}`,
+                folder: "/twisper_posts"
             });
-            imageUrl = (result as any).secure_url;
+            
+            imageUrl = result.url;
         }
 
         if (!content && !imageUrl) {
